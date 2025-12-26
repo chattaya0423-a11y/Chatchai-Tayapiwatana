@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use CytoSoftware-RPQ in your work, please cite it."
+title: "CytoSoftware-RPQ"
+version: "1.0.0"
+date-released: "2025-12-24"
+authors:
+  - family-names: "Tayapiwatana"
+    given-names: "Chatchai"
+repository-code: "https://github.com/<YOUR_ORG_OR_USERNAME>/cytosoftware-rpq"
+license: "MIT"

@@ -1,0 +1,8 @@
+numpy
+pandas
+opencv-python-headless
+scikit-image
+tqdm
+matplotlib
+ipywidgets
+scipy; python_version>="3.9"
