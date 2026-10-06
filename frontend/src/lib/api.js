@@ -20,6 +20,29 @@ export async function postAnalyze(files, meta, onProgress) {
   return data;
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Poll a processing job until it finishes. Calls onStage(stage) on updates.
+export async function pollJob(id, onStage, intervalMs = 1500, maxMs = 1800000) {
+  const start = Date.now();
+  let last = "";
+  while (Date.now() - start < maxMs) {
+    const job = await getJob(id);
+    if (onStage && job.stage && job.stage !== last) {
+      last = job.stage;
+      onStage(job.stage);
+    }
+    if (job.status === "done") return job;
+    if (job.status === "error") {
+      const err = new Error(job.error || "Analysis failed");
+      err.jobError = true;
+      throw err;
+    }
+    await sleep(intervalMs);
+  }
+  throw new Error("Analysis timed out.");
+}
+
 export async function postDemo() {
   const { data } = await axios.post(`${API}/demo`);
   return data;

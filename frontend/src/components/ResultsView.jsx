@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Download, FileText, FileJson, Archive, Info } from "lucide-react";
+import { Download, FileText, FileJson, Archive, Info, AlertTriangle } from "lucide-react";
 import KpiCards from "@/components/KpiCards";
 import Charts from "@/components/Charts";
 import DataTables from "@/components/DataTables";
@@ -55,6 +55,14 @@ export default function ResultsView({ job }) {
       </div>
 
       <KpiCards summary={job.summary} />
+
+      {job.warning && (
+        <div data-testid="results-warning" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 flex gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="text-xs text-amber-200/90 leading-relaxed">{job.warning}</div>
+        </div>
+      )}
+
       <Charts job={job} />
       <DataTables job={job} />
 

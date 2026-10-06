@@ -7,7 +7,7 @@ import UploadPanel from "@/components/UploadPanel";
 import ResultsView from "@/components/ResultsView";
 import EmptyState from "@/components/EmptyState";
 import HistoryBar from "@/components/HistoryBar";
-import { postAnalyze, postDemo, listJobs, getJob, removeJob } from "@/lib/api";
+import { postAnalyze, postDemo, listJobs, getJob, removeJob, pollJob } from "@/lib/api";
 
 function App() {
   const [job, setJob] = useState(null);
@@ -36,16 +36,21 @@ function App() {
     setProgress(0);
     setStage("Uploading movies");
     try {
-      setTimeout(() => setStage("Segmenting channels & tracking targets"), 1200);
-      const result = await postAnalyze(files, meta, (p) => {
+      const { id } = await postAnalyze(files, meta, (p) => {
         setProgress(p);
-        if (p >= 100) setStage("Computing proximity & persistence");
+        if (p >= 100) setStage("Decoding video frames");
       });
+      refreshHistory();
+      const result = await pollJob(id, (s) => setStage(s));
       setJob(result);
-      toast.success("Analysis complete", { description: `${result.summary.length} condition(s) processed.` });
+      if (result.warning) {
+        toast.warning("Analysis finished with a warning", { description: result.warning });
+      } else {
+        toast.success("Analysis complete", { description: `${result.summary.length} condition(s) processed.` });
+      }
       refreshHistory();
     } catch (e) {
-      const detail = e?.response?.data?.detail || e.message;
+      const detail = e?.jobError ? e.message : (e?.response?.data?.detail || e.message);
       toast.error("Analysis failed", { description: String(detail) });
     } finally {
       setBusy(false);
@@ -73,9 +78,16 @@ function App() {
     setBusy(true);
     setStage("Loading run");
     try {
-      setJob(await getJob(id));
-    } catch {
-      toast.error("Could not load that run");
+      let result = await getJob(id);
+      if (result.status === "processing") {
+        result = await pollJob(id, (s) => setStage(s));
+      } else if (result.status === "error") {
+        toast.error("That run failed", { description: result.error || "" });
+        return;
+      }
+      setJob(result);
+    } catch (e) {
+      toast.error("Could not load that run", { description: e?.message });
     } finally {
       setBusy(false);
       setStage("");
