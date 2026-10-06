@@ -1,0 +1,40 @@
+{
+  "summary": "Full backend + frontend E2E for NK-Track Analytics. Backend: 13/13 pytest tests passed (health, demo, single/dual multipart upload, list/get/delete jobs, all 5 download kinds incl. zip with threshold_sensitivity.csv). Frontend: demo flow renders KPIs, 3 charts, 5 tabs/tables, download links use correct backend URL and job id, history list + delete + click-to-load work, upload flow with editable label + sensitivity toggle completes and renders KPIs, ?job={id} deep-link auto-loads. One minor UI bug found: table-filter only filters per-frame/episodes tabs, not the Summary tab (and not Sensitivity).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "DataTables.jsx (Summary tab)", "issue": "table-filter input does not filter the Summary table rows (only per_frame and episodes tabs are filtered). Entering any text (match or no-match) keeps all summary rows visible.", "selector": "[data-testid=table-filter] + [data-testid=summary-table]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ResultsView charts (initial render)", "issues": ["Recharts logs several 'width(-1) and height(-1)' warnings on initial mount when ResponsiveContainer has not laid out yet. Cosmetic only; charts eventually render correctly."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "DataTables.jsx: apply the `q` filter to job.summary (and optionally sensitivity) so the table-filter input works consistently across all tabs. e.g. `job.summary.filter(s => s.label.toLowerCase().includes(q.toLowerCase()))`.",
+    "Optional: suppress initial Recharts width/height warnings by giving ResponsiveContainer parents an explicit min-height."
+  ],
+  "critical_code_review_comments": [
+    "DataTables.jsx line 71 maps job.summary unfiltered while frames/episodes are filtered by q — inconsistent filter behavior.",
+    "server.py `_run_pipeline` is synchronous and run in a threadpool (good); however the imageio-ffmpeg decode happens before thread offload for small files only via `_decode_uploads` — currently fine since it's already wrapped in asyncio.to_thread. OK.",
+    "server.py download endpoint does not validate `kind` against an allowed set — unknown kinds silently fall through to the zip branch. Minor hardening recommended.",
+    "No input validation on numeric params in /api/analyze beyond float() cast — negative or zero values would be accepted. Consider Pydantic validation."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (created)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "95%"},
+  "test_credentials": "N/A (no auth)",
+  "seed_data_creation": "Created several demo + upload jobs during testing; test suite auto-cleans up its created jobs via session fixture, but a few manual-UI jobs remain in Mongo (visible in history).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All critical flows pass. Only outstanding issue is the Summary tab not respecting the table-filter input in DataTables.jsx. Backend tests live at /app/backend/tests/backend_test.py and run cleanly with `pytest backend/tests/backend_test.py -v`. Sample video /app/test_assets/sample_nk_movie.mp4 decodes to a working analysis (~1 condition, non-zero episodes, 7 persistent).",
+  "rca of the issue": "Table filter bug RCA: In /app/frontend/src/components/DataTables.jsx the `q` state is used to .filter() `frames` (line 46) and `episodes` (line 47), but inside TabsContent 'summary' (line 71) the code iterates job.summary directly without applying the filter. Fix: define `const summaryRows = job.summary.filter(s => s.label.toLowerCase().includes(q.toLowerCase()))` and map over `summaryRows` instead."
+}

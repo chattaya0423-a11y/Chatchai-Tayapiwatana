@@ -45,6 +45,8 @@ export default function DataTables({ job }) {
 
   const frames = job.per_frame.filter((r) => r.label.toLowerCase().includes(q.toLowerCase()));
   const episodes = job.episodes.filter((r) => r.label.toLowerCase().includes(q.toLowerCase()));
+  const summaryRows = job.summary.filter((r) => r.label.toLowerCase().includes(q.toLowerCase()));
+  const sensRows = (job.sensitivity || []).filter((r) => r.label.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
@@ -68,7 +70,7 @@ export default function DataTables({ job }) {
 
         <TabsContent value="summary">
           <ScrollTable testid="summary-table" head={["Condition", "Frames", "Mean targets", "Mean engaged %", "Episodes", "Persistent tracks", "Eligible", "Persistent %", "Persistent eps", "Mean dur (min)"]}>
-            {job.summary.map((s) => (
+            {summaryRows.map((s) => (
               <tr key={s.label} className="hover:bg-accent/40">
                 <Td><Dot label={s.label} labels={labels} /></Td>
                 <Td>{fmtInt(s.frames)}</Td>
@@ -125,7 +127,7 @@ export default function DataTables({ job }) {
         {job.sensitivity?.length ? (
           <TabsContent value="sensitivity">
             <ScrollTable testid="sensitivity-table" head={["Contact px", "Condition", "Mean engaged %", "Persistent tracks", "Eligible", "Persistent %", "Persistent eps", "Mean dur (min)"]}>
-              {job.sensitivity.map((r, i) => (
+              {sensRows.map((r, i) => (
                 <tr key={i} className="hover:bg-accent/40">
                   <Td className="text-amber-300 font-semibold">{r.contact_px}</Td>
                   <Td><Dot label={r.label} labels={labels} /></Td>
