@@ -1,0 +1,127 @@
+{
+  "project_title": "NK-Track Analytics - Persistent NK-Proximal Target Occupation Analysis Platform",
+  "app_type": "dashboard (scientific data-analysis / research tool)",
+  "emotional_archetype": "ARCHETYPE 4: SWISS & HIGH-CONTRAST + OPTICAL PRECISION TECH (Command-Center High Density & Scientific Rigor)",
+  "theme": "Dark / Light Mode dual toggle (Default: Dark Mode with Obsidian #090D16 base, Emerald #10B981 NK accent, Cyan #06B6D4 target accent, Crimson #F43F5E contact trigger accent)",
+  "typography": {
+    "heading_font": "Cabinet Grotesk / Outfit / System Sans (Bold display weights for metrics & headers)",
+    "body_font": "IBM Plex Sans / Inter",
+    "mono_font": "JetBrains Mono / Source Code Pro (For cell coordinates, pixel thresholds, frame indices, metrics data)",
+    "hierarchy": {
+      "h1_title": "text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight",
+      "h2_section": "text-xl sm:text-2xl font-semibold tracking-tight",
+      "h3_subsection": "text-lg sm:text-xl font-medium",
+      "metric_hero_number": "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-mono",
+      "body": "text-sm sm:text-base leading-relaxed",
+      "table_cell": "text-xs sm:text-sm font-mono",
+      "label_overline": "text-xs uppercase tracking-[0.2em] font-mono text-emerald-400 font-semibold"
+    }
+  },
+  "colors": {
+    "dark_mode": {
+      "bg_primary": "#070A10",
+      "bg_card": "#0F172A",
+      "bg_card_hover": "#1E293B",
+      "border_subtle": "#1E293B",
+      "border_accent": "#334155",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8",
+      "text_muted": "#64748B",
+      "nk_cell_red_channel": "#EF4444",
+      "target_cell_green_channel": "#10B981",
+      "contact_engagement": "#F59E0B",
+      "persistent_fraction": "#06B6D4",
+      "primary_brand": "#0284C7"
+    },
+    "light_mode": {
+      "bg_primary": "#F8FAFC",
+      "bg_card": "#FFFFFF",
+      "bg_card_hover": "#F1F5F9",
+      "border_subtle": "#E2E8F0",
+      "border_accent": "#CBD5E1",
+      "text_primary": "#0F172A",
+      "text_secondary": "#475569",
+      "text_muted": "#64748B",
+      "nk_cell_red_channel": "#DC2626",
+      "target_cell_green_channel": "#059669",
+      "contact_engagement": "#D97706",
+      "persistent_fraction": "#0891B2",
+      "primary_brand": "#0284C7"
+    }
+  },
+  "layout_and_spacing": {
+    "container_padding": "p-4 sm:p-6 lg:p-8",
+    "grid_gap": "gap-4 sm:gap-6",
+    "card_padding": "p-5 sm:p-6",
+    "border_radius": "rounded-lg",
+    "bento_strategy": "MODE B: High Density Data Dashboard. Split top header workflow controls, sticky analysis parameter rail, primary analytics grid, video gallery canvas, and bottom collapsible detailed tables."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1576086213369-97a306d36557?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxmbHVvcmVzY2VuY2UlMjBtaWNyb3Njb3B5JTIwY2VsbHMlMjBsYWJvcmF0b3J5JTIwc2NpZW5jZSUyMHJlc2VhcmNofGVufDB8fHx8MTc5MTI5MTA5NHww&ixlib=rb-4.1.0&q=85",
+      "category": "microscopy_cell_background",
+      "description": "Fluorescence microscopy live cells (red/green fluorescent dye) header backdrop and simulation sample"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1581091007718-0c50d599bfd0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHw0fHxmbHVvcmVzY2VuY2UlMjBtaWNyb3Njb3B5JTIwY2VsbHMlMjBsYWJvcmF0b3J5JTIwc2NpZW5jZSUyMHJlc2VhcmNofGVufDB8fHx8MTc5MTI5MTA5NHww&ixlib=rb-4.1.0&q=85",
+      "category": "lab_scientist",
+      "description": "Lab research scientist operating high-resolution automated fluorescence microscope"
+    }
+  ],
+  "key_features_to_build": [
+    {
+      "feature_id": "header_nav",
+      "description": "Top research bar with app title, version tag (v2.4 Sci-Core), dataset status, light/dark mode switch, sample data loader button ('Load Demo Experiment Data'), and export batch button."
+    },
+    {
+      "feature_id": "video_uploader_and_condition_manager",
+      "description": "Multi-video file dropzone supporting .avi/.mp4/stack files + editable condition labels (S1 control, S2 drug treatment, S3 knockout, etc.). Quick preview thumbnails and frame count detection."
+    },
+    {
+      "feature_id": "analysis_parameter_controls",
+      "description": "Control panel for scientific parameters: Contact Proximity Threshold (px, default 10px), Stable Frames Count (frames, default 4 frames), Frame Interval (minutes, default 3.0 min), Max Allowed Displacement (px, default 25px), Segmentation Sensitivity Slider."
+    },
+    {
+      "feature_id": "execution_and_progress_banner",
+      "description": "Run Analysis button with step-by-step processing animation (Channel Extraction -> Segmentation -> Track Linkage -> Proximity Distance Matrix -> Persistent Episode Classifier). Shows elapsed time & frame processing speed."
+    },
+    {
+      "feature_id": "headline_summary_cards",
+      "description": "4 key metric KPI cards: Persistent-Target Fraction (%), Total Eligible Target Tracks, Total Contact Episodes (>=4 frames), Mean Engagement Duration (mins)."
+    },
+    {
+      "feature_id": "charts_and_data_visualization",
+      "description": "1) Engaged-Target % Over Time multi-line chart (comparing conditions S1 vs S2 across frame index). 2) Persistent Fraction Bar Chart per Video/Condition with error bars. 3) Episode Duration Histogram / Distribution. 4) Contact Proximity Distance Heatmap."
+    },
+    {
+      "feature_id": "video_cell_canvas_viewer",
+      "description": "Interactive simulated microscopy frame viewer with frame slider, play/pause, bounding box / overlay toggle (Red NK cells, Green Target cells, Yellow contact lines <=10px, Persistent highlight circle). Allows step frame-by-frame analysis."
+    },
+    {
+      "feature_id": "tables_section",
+      "description": "Tabbed expandable data tables: 1) Video Summary Metrics Table. 2) Per-Frame Engaged Fraction Table. 3) Individual Contact Episode Details Table (Track ID, Target Cell ID, Start Frame, End Frame, Duration, Min Distance). Searchable and sortable."
+    },
+    {
+      "feature_id": "sensitivity_analysis",
+      "description": "Threshold Sensitivity Matrix comparing metrics at 2px, 5px, 10px, and 15px proximity distance thresholds to validate robustness of persistent occupation data."
+    },
+    {
+      "feature_id": "export_suite",
+      "description": "Export drawer offering CSV export for per-frame data, JSON export for graph analysis metadata, and ZIP bundle (CSV summary + PNG charts + micro-videos)."
+    }
+  ],
+  "testing_and_accessibility_requirements": {
+    "data_testid_rules": "All interactive elements, buttons, inputs, tabs, chart containers, and key metric texts MUST include data-testid attributes (e.g. data-testid='run-analysis-button', data-testid='parameter-proximity-input', data-testid='persistent-fraction-kpi').",
+    "contrast_rules": "Text against dark background must have minimum 4.5:1 ratio. Text colors on hover states must be explicitly declared (e.g., hover:bg-slate-800 hover:text-white).",
+    "keyboard_nav": "All sliders, buttons, inputs, and tabs must be keyboard operable with clear focus rings (focus:ring-2 focus:ring-cyan-500)."
+  },
+  "instructions_to_main_agent": [
+    "Build the dashboard using React JS and standard Tailwind CSS + Lucide React icons + Recharts / Framer motion.",
+    "Ensure dark mode is enabled by default with a sleek high-contrast dark laboratory aesthetic (deep slate/blue-gray palette with glowing red/green fluorophore accents).",
+    "Provide realistic synthetic dataset generation for instant demo loading ('Load Demo Experiment Data') so users can explore analysis results immediately without uploading heavy video files.",
+    "Implement real-time interactive parameter adjustments: changing proximity px or stable frames dynamically updates calculation or allows re-run.",
+    "Do NOT use transparent backgrounds on dropdowns, modals, or sticky bars. Use solid bg-slate-900 or backdrop-blur-md bg-slate-900/90 with explicit 1px borders.",
+    "Ensure all components are built in JS/JSX files as specified in the workspace setup.",
+    "Store testIds in a structured format or apply them directly matching data-testid attributes for E2E testing."
+  ]
+}
