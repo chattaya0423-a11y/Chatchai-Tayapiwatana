@@ -3,7 +3,7 @@ import { UploadCloud, X, Film, Play, Loader2, SlidersHorizontal } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
@@ -42,7 +42,7 @@ export default function UploadPanel({ onRun, onDemo, busy, progress, stage }) {
   const [files, setFiles] = useState([]);
   const [labels, setLabels] = useState([]);
   const [params, setParams] = useState(DEFAULTS);
-  const [sensitivity, setSensitivity] = useState(false);
+  const [thresholds, setThresholds] = useState([]);
   const [drag, setDrag] = useState(false);
   const inputRef = useRef(null);
 
@@ -61,18 +61,21 @@ export default function UploadPanel({ onRun, onDemo, busy, progress, stage }) {
 
   const setLabel = (idx, val) => setLabels((p) => p.map((l, i) => (i === idx ? val : l)));
   const setParam = (k, v) => setParams((p) => ({ ...p, [k]: v }));
+  const toggleThreshold = (v) =>
+    setThresholds((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
 
   const run = () => {
     if (!files.length) {
       toast.error("Add at least one video first");
       return;
     }
+    const sens = [...thresholds].sort((a, b) => a - b);
     onRun(files, {
       name: `${files.length} condition${files.length > 1 ? "s" : ""} · ${params.contact_px}px`,
       labels,
       ...params,
-      sensitivity,
-      sensitivity_thresholds: [2, 5, 10],
+      sensitivity: sens.length > 0,
+      sensitivity_thresholds: sens,
     });
   };
 
@@ -141,12 +144,40 @@ export default function UploadPanel({ onRun, onDemo, busy, progress, stage }) {
         <ParamRow id="max_target_displacement_px" label="Max displacement" unit="px" value={params.max_target_displacement_px} min={20} max={200} step={5} onChange={(v) => setParam("max_target_displacement_px", v)} />
       </div>
 
-      <div className="flex items-center justify-between mt-5 rounded-lg border border-border bg-background/50 px-3 py-2.5">
-        <div>
+      <div className="mt-5 rounded-lg border border-border bg-background/50 px-3 py-2.5">
+        <div className="flex items-baseline justify-between">
           <div className="text-xs font-medium">Threshold sensitivity</div>
-          <div className="text-[10px] text-muted-foreground font-mono">compare 2 / 5 / 10 px</div>
+          <span className="text-[10px] text-muted-foreground font-mono">
+            {thresholds.length ? `${thresholds.length} selected` : "optional"}
+          </span>
         </div>
-        <Switch data-testid="sensitivity-switch" checked={sensitivity} onCheckedChange={setSensitivity} />
+        <div className="text-[10px] text-muted-foreground font-mono mb-2.5">
+          compare chosen proximity thresholds
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[2, 5, 10].map((px) => {
+            const active = thresholds.includes(px);
+            return (
+              <label
+                key={px}
+                data-testid={`sensitivity-option-${px}`}
+                className={`flex items-center justify-center gap-2 rounded-md border px-2 py-2 cursor-pointer transition-colors ${
+                  active
+                    ? "border-amber-500/50 bg-amber-500/15 text-amber-200"
+                    : "border-border bg-background/60 text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                <Checkbox
+                  data-testid={`sensitivity-checkbox-${px}`}
+                  checked={active}
+                  onCheckedChange={() => toggleThreshold(px)}
+                  className="border-muted-foreground data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
+                />
+                <span className="font-mono text-xs font-semibold">{px} px</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       {busy && (
