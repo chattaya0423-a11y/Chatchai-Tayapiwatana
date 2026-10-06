@@ -44,7 +44,12 @@ Primary metric: `persistent-target fraction = persistent target tracks / eligibl
 - Full backend pipeline + demo + downloads (ZIP bundles all CSVs + config + sensitivity).
 - Full dashboard: upload/params/run, KPIs, engaged-%-over-time + headline bars + sensitivity charts,
   5 tabbed tables (summary, per-frame, episodes, sensitivity, config), run history, `?job=` deep-link.
-- Verified: backend 13/13 pytest pass; frontend E2E pass. Table-filter now applies across all tabs.
+- **Async analysis jobs (fix)**: `/api/analyze` now returns `{id,status:processing}` instantly and runs
+  in a background task; the frontend polls `GET /api/jobs/{id}` (stage updates) until `done`/`error`.
+  This fixes large real high-content-imager movies failing on long synchronous requests. A `warning`
+  is surfaced when no red NK / green target objects are detected. Orphaned `processing` jobs are reaped
+  on startup. Downloads 409 until the job is done.
+- Verified: backend 14/14 pytest pass; frontend E2E 100% (upload auto-renders via polling).
 
 ## Backlog / future (P1/P2)
 - P1: Interactive frame viewer with cell-overlay (segmentation masks / contact lines).

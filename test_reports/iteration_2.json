@@ -1,0 +1,24 @@
+{
+  "summary": "Verified async /api/analyze + polling fix end-to-end. 14/14 backend pytest cases pass (fast submit returns {id,status:'processing'} in <10s, heavy.mp4 completes in ~55-120s via polling with stage transitions, two-file upload yields 2-row summary, demo stays synchronous and returns full job with sensitivity(6), download 409 guard fires while processing, zip has 5 files incl threshold_sensitivity.csv, delete works). Frontend: upload polling flow auto-renders KPIs/charts/tables/downloads without manual refresh. Demo button, Sensitivity tab+chart, Summary filter (now filters Summary rows 1→0), download links all point to /api/jobs/{id}/download?kind=..., history items visible, deep-link ?job={id} auto-loads done job.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Results view (after demo)", "issues": ["Benign Recharts warning on initial render: 'width(-1) and height(-1) of chart should be greater than 0' — chart container measures before layout settles; charts render correctly afterwards. Consider ResponsiveContainer with explicit minHeight or defer render until container measured."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Background task uses asyncio.create_task without a job queue — if the single-worker process restarts mid-job, status stays 'processing' forever. Consider a janitor that marks orphaned processing jobs as error on startup.",
+    "process_job calls shutil.rmtree in finally — fine, but no size/quota check on /tmp/nk_jobs upload dir; a very large upload could exhaust ephemeral storage.",
+    "Download endpoint only guards 'done' with 409, but 'error' status currently also returns 409 ('Analysis not finished yet'). Consider distinct 410/400 for error jobs with the stored error message surfaced."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Several test jobs created via tests; cleanup fixture deletes them. Demo jobs persisted (kept intentionally by test_demo).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Async analyze flow verified. Hidden file input requires page.set_input_files('[data-testid=file-input]', ...) (do not wait_for visibility). Recent runs use data-testid='history-item-{id}' (not recent-job-*). Sensitivity tab/chart only render when job.sensitivity is non-empty. Heavy job polling can take 90-180s; use interval ~3s, timeout 240s."
+}

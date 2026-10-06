@@ -321,6 +321,20 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def reap_orphan_jobs():
+    # A worker restart (deploy/hot-reload/crash) loses in-flight background tasks;
+    # mark any job still 'processing' as error so the UI never hangs forever.
+    await db.jobs.update_many(
+        {"status": "processing"},
+        {"$set": {
+            "status": "error",
+            "stage": "Interrupted",
+            "error": "Analysis was interrupted by a server restart. Please run it again.",
+        }},
+    )
+
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
